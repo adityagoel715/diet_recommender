@@ -120,13 +120,13 @@ MODEL_PATH = 'models/trained_model.pkl'
 def load_model_and_objects():
     if not os.path.exists(MODEL_PATH):
         st.error(f"Model file not found at {MODEL_PATH}! Please ensure 'trained_model.pkl' is in the specified path.")
-        return None, None, None, None
-    
+        return None, None, None, None, None
+
     with open(MODEL_PATH, 'rb') as f:
         model_info = pickle.load(f)
-    return model_info['model'], model_info['scaler'], model_info['mlb'], model_info['feature_names']
+    return model_info['model'], model_info['scaler'], model_info['mlb'], model_info['feature_names'], model_info
 
-model, scaler, mlb, feature_names = load_model_and_objects()
+model, scaler, mlb, feature_names, model_info = load_model_and_objects()
 
 # Initialize DietRecommender class
 recommender = DietRecommender()
