@@ -113,7 +113,7 @@ Your estimated daily calorie goal for a healthy weight loss is **{calories}** ca
         return final_output
 
 # --- 1. Load the Trained Model and Preprocessing Objects ---
-MODEL_PATH = ' C:\Users\lenovo\OneDrive\Desktop\internship1\models\trained_model.pkl'
+MODEL_PATH = 'models/trained_model.pkl'
 
 # Use st.cache_data to load the model only once.
 @st.cache_data
