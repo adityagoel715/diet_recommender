@@ -7,15 +7,12 @@ import tensorflow as tf
 from sklearn.preprocessing import StandardScaler, MultiLabelBinarizer
 
 # --- Dummy Classes for local development without the full training script ---
-# These are included to allow the app to run on a local machine without needing the original training script.
-# They are simplified versions of the classes from your full pipeline.
 try:
     import xgboost as xgb
 except ImportError:
     st.error("XGBoost library not found. Please install it with `pip install xgboost`.")
     xgb = None
 
-# A simplified DietRecommender class for the app's output.
 class DietRecommender:
     def __init__(self):
         self.dietplans = {
@@ -135,16 +132,15 @@ recommender = DietRecommender()
 st.title("👨‍⚕️ Personalized Health & Diet Recommender")
 st.markdown("Enter your health metrics to receive a comprehensive health report and a personalized diet plan.")
 
-
 # --- Input Sections ---
 st.header("1. Personal Information")
 col1, col2 = st.columns(2)
 with col1:
-    age = st.slider("Age (years)", 18, 100, 45)
+    age = st.number_input("Age (years)", min_value=18, max_value=100, value=45)
     gender = st.selectbox("Gender", ["Male", "Female"])
-    height_cm = st.slider("Height (cm)", 100, 250, 175)
+    height_cm = st.number_input("Height (cm)", min_value=100, max_value=250, value=175)
 with col2:
-    weight_kg = st.slider("Weight (kg)", 30, 200, 80)
+    weight_kg = st.number_input("Weight (kg)", min_value=30, max_value=200, value=80)
     activity_level = st.selectbox("Activity Level", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active"])
     daily_caloric_intake = st.number_input("Daily Caloric Intake (kcal)", 500, 5000, 2500)
 
@@ -181,7 +177,7 @@ if st.button("Get My Health Report", type="primary"):
             'Cholesterol_mg/dL': float(cholesterol),
             'Blood_Pressure_mmHg': float(blood_pressure),
             'Glucose_mg/dL': float(glucose),
-            'Calories_per_Exercise_Hour': 300,  # A placeholder value for now
+            'Calories_per_Exercise_Hour': 300,
             'Activity_Level': activity_level,
             'Dietary_Preference': dietary_preference,
             'Preferred_Cuisine': preferred_cuisine,
@@ -256,8 +252,51 @@ if st.button("Get My Health Report", type="primary"):
 
         # Display Diet Plan
         st.subheader("Personalized Diet Plan 🍎")
-        report = recommender.get_diet_recommendation(predicted_diseases, user_data)
-        st.markdown(report, unsafe_allow_html=True)
+
+        # Get the main condition to retrieve the correct plan
+        main_condition = 'NORMAL'
+        has_diabetes, has_obesity, has_hypertension = 'Diabetes' in predicted_diseases, 'Obesity' in predicted_diseases, 'Hypertension' in predicted_diseases
+        if has_diabetes and has_obesity: main_condition = 'DIABETES_OBESITY'
+        elif has_diabetes and has_hypertension: main_condition = 'HYPERTENSION_DIABETES'
+        elif has_diabetes: main_condition = 'DIABETES'
+        elif has_obesity: main_condition = 'OBESITY'
+        elif has_hypertension: main_condition = 'HYPERTENSION'
+
+        # Get the diet plan text and format it for caloric goals if needed
+        plan_text = recommender.dietplans.get(main_condition)
+        if main_condition in ['OBESITY', 'DIABETES_OBESITY']:
+            tdee = recommender.calculate_user_tdee(user_data)
+            calorie_goal = tdee - 500
+            plan_text = plan_text.format(calories=int(calorie_goal))
+
+        st.markdown(plan_text)
+
+        # Display the Sample Meal Plan in a structured format
+        st.subheader("Sample Meal Plan")
+        meal_plan = recommender.meal_plans.get(main_condition, {}).get('NORMAL', recommender.meal_plans['NORMAL']['NORMAL'])
+        col_b, col_l, col_d = st.columns(3)
+
+        with col_b:
+            st.markdown("### Breakfast")
+            st.write(meal_plan['Breakfast'])
+
+        with col_l:
+            st.markdown("### Lunch")
+            st.write(meal_plan['Lunch'])
+
+        with col_d:
+            st.markdown("### Dinner")
+            st.write(meal_plan['Dinner'])
+
+        # Display Personal Dietary Notes
+        st.markdown("---")
+        st.subheader("Personal Dietary Notes")
+        cuisine = user_data.get('Preferred_Cuisine', '').strip()
+        st.markdown(f"**Preferred Cuisine:** The provided plan can be adapted to a **{cuisine}**-style diet.\n" if cuisine else "**Preferred Cuisine:** No specific preference noted.\n")
+        restrictions = user_data.get('Dietary_Restrictions', '').strip()
+        st.markdown(f"**Dietary Restrictions:** The plan has been designed to honor your restriction(s) of **{restrictions}**.\n" if restrictions else "**Dietary Restrictions:** None noted.\n")
+        allergies = user_data.get('Allergies', '').strip()
+        st.markdown(f"**Allergies:** Please ensure all meals and ingredients are free of **{allergies}**.\n" if allergies else "**Allergies:** None noted.\n")
         
         st.markdown("---")
         st.info("Disclaimer: This is for educational purposes only and not a substitute for medical advice. Consult a healthcare professional.")
