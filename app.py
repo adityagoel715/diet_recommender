@@ -129,11 +129,11 @@ model, scaler, mlb, feature_names, model_info = load_model_and_objects()
 recommender = DietRecommender()
 
 # --- 2. Build the Streamlit App User Interface ---
-st.title("👨‍⚕️ Personalized Health & Diet Recommender")
+st.markdown("<h1 style='text-align: center; color: #4CAF50;'>👨‍⚕️ Personalized Health & Diet Recommender</h1>", unsafe_allow_html=True)
 st.markdown("Enter your health metrics to receive a comprehensive health report and a personalized diet plan.")
 
 # --- Input Sections ---
-st.header("1. Personal Information")
+st.markdown("<h2 style='color: #2E8B57;'>1. Personal Information</h2>", unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     age = st.number_input("Age (years)", min_value=18, max_value=100, value=45)
@@ -144,7 +144,7 @@ with col2:
     activity_level = st.selectbox("Activity Level", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active"])
     daily_caloric_intake = st.number_input("Daily Caloric Intake (kcal)", 500, 5000, 2500)
 
-st.header("2. Health Metrics")
+st.markdown("<h2 style='color: #2E8B57;'>2. Health Metrics</h2>", unsafe_allow_html=True)
 col3, col4, col5 = st.columns(3)
 with col3:
     cholesterol = st.number_input("Cholesterol (mg/dL)", 100, 400, 200)
@@ -153,7 +153,7 @@ with col4:
 with col5:
     glucose = st.number_input("Glucose (mg/dL)", 50, 300, 95)
     
-st.header("3. Dietary Preferences & Restrictions")
+st.markdown("<h2 style='color: #2E8B57;'>3. Dietary Preferences and Restrictions</h2>", unsafe_allow_html=True)
 col6, col7 = st.columns(2)
 with col6:
     dietary_preference = st.selectbox("Dietary Preference", ["Normal", "Vegetarian"])
