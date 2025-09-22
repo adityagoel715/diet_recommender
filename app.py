@@ -68,11 +68,11 @@ Your estimated daily calorie goal for a healthy weight loss is **{calories}** ca
 """
         }
         self.meal_plans = {
-            'DIABETES_OBESITY': {'NORMAL': {'Breakfast': 'Vegetable omelet with low-fat cheese.', 'Lunch': 'Chicken and vegetable skewers with a small portion of brown rice.', 'Dinner': 'Grilled fish with a large serving of steamed broccoli and cauliflower.'}},
-            'DIABETES': {'NORMAL': {'Breakfast': 'Scrambled eggs with spinach and whole-wheat toast.', 'Lunch': 'Grilled chicken salad with a light vinaigrette.', 'Dinner': 'Baked salmon with steamed broccoli and quinoa.'}},
-            'HYPERTENSION': {'NORMAL': {'Breakfast': 'Unsalted oatmeal with sliced banana.', 'Lunch': 'Large green salad with grilled fish and no-salt added dressing.', 'Dinner': 'Baked chicken with steamed vegetables seasoned with herbs.'}},
-            'OBESITY': {'NORMAL': {'Breakfast': 'Greek yogurt with a handful of berries.', 'Lunch': 'A large bowl of mixed greens with grilled lean protein.', 'Dinner': 'Baked cod with a side of steamed asparagus and a sprinkle of lemon juice.'}},
-            'NORMAL': {'NORMAL': {'Breakfast': 'Avocado toast on whole-wheat bread with a boiled egg.', 'Lunch': 'Turkey and veggie wrap on a whole-wheat tortilla.', 'Dinner': 'Lean steak with roasted potatoes and a side salad.'}},
+            'DIABETES_OBESITY': {'NORMAL': {'Breakfast': 'Vegetable omelet with low-fat cheese.', 'Lunch': 'Chicken and vegetable skewers with a small portion of brown rice.', 'Dinner': 'Grilled fish with a large serving of steamed broccoli and cauliflower.'},'Vegetarian':{'Breakfast': 'Tofu scramble with spinach, bell peppers, and a sprinkle of nutritional yeast for a cheesy flavor.', 'Lunch': 'Black bean and corn salad with avocado and a lime vinaigrette.', 'Dinner': 'Lentil soup with a side of steamed broccoli and cauliflower.'}},
+            'DIABETES': {'NORMAL': {'Breakfast': 'Scrambled eggs with spinach and whole-wheat toast.', 'Lunch': 'Grilled chicken salad with a light vinaigrette.', 'Dinner': 'Baked salmon with steamed broccoli and quinoa.'},'Vegetarian': {'Breakfast': 'Oatmeal topped with berries, nuts, and a spoonful of almond butter.', 'Lunch': 'Grilled vegetable and lentil salad with a light vinaigrette.', 'Dinner': 'Baked tofu with steamed broccoli and quinoa.'}},
+            'HYPERTENSION': {'NORMAL': {'Breakfast': 'Unsalted oatmeal with sliced banana.', 'Lunch': 'Large green salad with grilled fish and no-salt added dressing.', 'Dinner': 'Baked chicken with steamed vegetables seasoned with herbs.'},'Vegetarian':{'Breakfast': 'Unsalted oatmeal with sliced banana and a handful of unsalted almonds.', 'Lunch': 'Large green salad with chickpeas, cucumbers, and a no-salt added dressing.', 'Dinner': 'Black bean burgers (without processed toppings) with steamed vegetables seasoned with herbs.'}},
+            'OBESITY': {'NORMAL': {'Breakfast': 'Greek yogurt with a handful of berries.', 'Lunch': 'A large bowl of mixed greens with grilled lean protein.', 'Dinner': 'Baked cod with a side of steamed asparagus and a sprinkle of lemon juice.'},'Vegetarian':{'Breakfast': 'Greek yogurt (or a plant-based alternative like soy or coconut yogurt) with a handful of berries and a spoonful of chia seeds.', 'Lunch': 'A large bowl of mixed greens with grilled mushrooms and chickpeas.', 'Dinner': 'Baked sweet potato with a lentil and vegetable stir-fry.'}},
+            'NORMAL': {'NORMAL': {'Breakfast': 'Avocado toast on whole-wheat bread with a boiled egg.', 'Lunch': 'Turkey and veggie wrap on a whole-wheat tortilla.', 'Dinner': 'Lean steak with roasted potatoes and a side salad.'},'Vegetarian':{'Breakfast': 'Avocado toast on whole-wheat bread with a plant-based scramble (made from tofu or chickpeas).', 'Lunch': 'Hummus and veggie wrap on a whole-wheat tortilla.', 'Dinner': 'A hearty vegetable lasagna made with whole-wheat noodles and low-fat cheese.'}},
         }
     def calculate_user_tdee(self, user_data):
         activity_multipliers = {'sedentary': 1.2, 'lightly active': 1.375, 'moderately active': 1.55, 'very active': 1.725}
@@ -273,7 +273,7 @@ if st.button("Get My Health Report", type="primary"):
 
         # Display the Sample Meal Plan in a structured format
         st.subheader("Sample Meal Plan")
-        meal_plan = recommender.meal_plans.get(main_condition, {}).get('NORMAL', recommender.meal_plans['NORMAL']['NORMAL'])
+        meal_plan = recommender.meal_plans.get(main_condition, {}).get(dietary_preference, recommender.meal_plans['NORMAL']['NORMAL'])
         col_b, col_l, col_d = st.columns(3)
 
         with col_b:
